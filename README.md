@@ -55,7 +55,7 @@ It listens for the wake word "Cathey", classifies user intent into 4 categories,
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/Yiwen543/6895_Final_project.git
+git clone https://github.com/Yiwen543/6895-Final-Project-Cathey.git
 cd 6895_Final_project
 ```
 
