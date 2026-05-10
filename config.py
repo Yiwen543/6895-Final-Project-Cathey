@@ -1,7 +1,7 @@
 import torch
 
 # ── LLM ──────────────────────────────────────────────────────────────────────
-LLM_MODEL_NAME     = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+LLM_MODEL_NAME     = "Qwen/Qwen2.5-3B-Instruct"   # 3B > 1.1B TinyLlama: better JSON + semantic understanding
 LLM_GGUF_PATH      = "models/qwen2.5-3b-instruct-q3_k_m.gguf"
 
 if torch.cuda.is_available():

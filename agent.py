@@ -191,18 +191,22 @@ class CatheyAgent:
             fast["reply"] = self._rule_reply(fast)
             return self._do_direct_command(fast, text, 0.0)
 
+        # Only inject episodic context into the classifier — NOT user prefs.
+        # Device preferences (ac_set_temperature_preference, light_set_brightness_preference, …)
+        # are irrelevant for intent classification and confuse small models into
+        # outputting device-related types even for general_qa inputs.
+        # Prefs are passed only inside answer_qa() where they are actually useful.
         context = ""
         if self._memory.episodes.count() > 0:
             eps = self._memory.retrieve_episodes(text, n=2)
             ep_lines = [
                 f"Previously: user said \"{ep['text']}\", you replied \"{ep['meta']['cathey_reply']}\""
-                for ep in eps if ep["distance"] < 0.6
+                for ep in eps
+                if ep["distance"] < 0.6
+                and ep["meta"].get("cathey_reply", "").lower() not in
+                    ("sorry, i didn't understand that.", "")
             ]
             context = "\n".join(ep_lines)
-        if self._memory.prefs:
-            pref_lines = [f"- {k}: {v}" for k, v in self._memory.prefs.items()]
-            pref_block = "\n".join(pref_lines)
-            context = f"{context}\n{pref_block}".strip() if context else pref_block
         semantic, _, ms = self._llm.parse_unified(text, context=context, verbose=verbose)
 
         if semantic["type"] == "direct_command":
