@@ -1,4 +1,4 @@
-from rule_based import try_rule_based
+from nlp.rule_based import try_rule_based
 
 
 def test_turn_on_light():

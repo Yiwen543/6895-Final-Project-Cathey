@@ -2,13 +2,13 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 def test_window_pins_in_config():
-    import config
+    import core.config as config
     assert hasattr(config, "WINDOW_PINS")
     assert config.WINDOW_PINS == [17, 27, 22, 23]
     assert len(config.WINDOW_PINS) == 4
 
 def test_window_total_steps_in_config():
-    import config
+    import core.config as config
     assert hasattr(config, "WINDOW_TOTAL_STEPS")
     assert config.WINDOW_TOTAL_STEPS > 0
 
@@ -32,10 +32,10 @@ def test_get_device_state_mock():
     sys.modules["pi5neo"] = fake_pi5neo_mod
 
     # Remove cached gpio_executor so it re-imports with our mocks
-    if "gpio_executor" in sys.modules:
-        del sys.modules["gpio_executor"]
+    if "hardware.gpio_executor" in sys.modules:
+        del sys.modules["hardware.gpio_executor"]
 
-    from gpio_executor import GPIOExecutor
+    from hardware.gpio_executor import GPIOExecutor
     g = GPIOExecutor()
 
     state = g.get_device_state()
@@ -46,7 +46,7 @@ def test_get_device_state_mock():
 
 def test_get_device_state_updates_after_command():
     import sys
-    from gpio_executor import GPIOExecutor
+    from hardware.gpio_executor import GPIOExecutor
     import unittest.mock as mock
 
     g = GPIOExecutor.__new__(GPIOExecutor)
@@ -70,49 +70,49 @@ def test_get_device_state_updates_after_command():
     assert g.get_device_state()["color_temp"] == 4
 
 def test_warmer_increments_color_temp():
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, make the light warmer", state={"color_temp": 3})
     assert result is not None
     assert result["action"] == "set_color_temp"
     assert result["value"] == 4
 
 def test_cooler_decrements_color_temp():
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, make the light cooler", state={"color_temp": 3})
     assert result is not None
     assert result["action"] == "set_color_temp"
     assert result["value"] == 2
 
 def test_cozier_increments_color_temp():
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, make it cozier", state={"color_temp": 2})
     assert result is not None
     assert result["value"] == 3
 
 def test_color_temp_clamps_at_max():
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, make the light warmer", state={"color_temp": 5})
     assert result["value"] == 5
 
 def test_color_temp_clamps_at_min():
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, make the light colder", state={"color_temp": 1})
     assert result["value"] == 1
 
 def test_relative_defaults_to_neutral_without_state():
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, make the light warmer", state=None)
     assert result["value"] == 4  # 3 + 1
 
 def test_existing_rules_still_work_with_state():
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, turn on the light", state={"color_temp": 3})
     assert result is not None
     assert result["action"] == "turn_on"
 
 def test_make_it_cooler_without_light_falls_through():
     # "make it cooler" is ambiguous — should go to LLM, not rule-based
-    from rule_based import try_rule_based
+    from nlp.rule_based import try_rule_based
     result = try_rule_based("Cathey, make it cooler", state={"color_temp": 3})
     assert result is None
 
@@ -132,10 +132,10 @@ def test_agent_passes_state_to_rule_based():
             sys.modules[mod] = fake
 
     # Fresh import of agent
-    if "agent" in sys.modules:
-        del sys.modules["agent"]
-    from agent import CatheyAgent
-    from gpio_executor import GPIOExecutor
+    if "core.agent" in sys.modules:
+        del sys.modules["core.agent"]
+    from core.agent import CatheyAgent
+    from hardware.gpio_executor import GPIOExecutor
 
     gpio = GPIOExecutor.__new__(GPIOExecutor)
     gpio._color_temp_level = 4
@@ -147,7 +147,7 @@ def test_agent_passes_state_to_rule_based():
     llm_mock.parse_unified = mock.Mock(return_value=({"type": "invalid"}, None, 0.0))
     agent = CatheyAgent(llm=llm_mock, memory=mock.Mock(), speak=mock.Mock(), gpio=gpio)
 
-    with mock.patch("agent.try_rule_based", return_value=None) as mock_rb:
+    with mock.patch("core.agent.try_rule_based", return_value=None) as mock_rb:
         agent.handle("Cathey, make the light warmer", verbose=False)
         assert mock_rb.called
         call_args = mock_rb.call_args[0]  # positional args tuple

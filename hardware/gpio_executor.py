@@ -5,7 +5,7 @@ import subprocess
 import time
 import threading
 import colorsys
-from config import WINDOW_PINS, WINDOW_TOTAL_STEPS
+from core.config import WINDOW_PINS, WINDOW_TOTAL_STEPS
 
 try:
     from pi5neo import Pi5Neo

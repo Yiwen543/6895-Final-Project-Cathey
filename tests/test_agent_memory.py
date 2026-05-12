@@ -1,4 +1,4 @@
-from llm_parser import UNIFIED_SYSTEM_PROMPT
+from nlp.llm_parser import UNIFIED_SYSTEM_PROMPT
 
 
 def test_hello_is_not_invalid_example():
@@ -16,7 +16,7 @@ def test_prompt_has_lower_temperature_example():
 
 
 from unittest.mock import MagicMock
-from agent import CatheyAgent
+from core.agent import CatheyAgent
 
 
 def _make_agent(parse_result, qa_result=""):

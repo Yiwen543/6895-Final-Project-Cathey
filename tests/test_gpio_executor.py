@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch
 
 # conftest.py has already injected mock lgpio into sys.modules
-from gpio_executor import GPIOExecutor
+from hardware.gpio_executor import GPIOExecutor
 
 
 @pytest.fixture

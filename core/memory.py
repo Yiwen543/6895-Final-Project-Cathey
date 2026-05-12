@@ -21,7 +21,7 @@ try:
 except ImportError:
     _HAS_CHROMADB = False
 
-from config import (
+from core.config import (
     MEMORY_DIR,
     WORKING_MAXLEN,
     SKILL_SIM_THRESHOLD,

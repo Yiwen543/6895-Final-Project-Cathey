@@ -17,7 +17,7 @@ import time
 import torch
 from typing import Any, Dict, List, Optional, Tuple
 
-from config import LLM_BACKEND, LLM_MODEL_NAME, LLM_GGUF_PATH, LLM_DEVICE, LLM_DTYPE, LLM_MAX_NEW_TOKENS, LORA_INFERENCE_PATH
+from core.config import LLM_BACKEND, LLM_MODEL_NAME, LLM_GGUF_PATH, LLM_DEVICE, LLM_DTYPE, LLM_MAX_NEW_TOKENS, LORA_INFERENCE_PATH
 
 if LLM_BACKEND == "transformers":
     from transformers import (
