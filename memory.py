@@ -1,5 +1,5 @@
 """
-MemoryManager: four-layer memory architecture for Nova.
+MemoryManager: four-layer memory architecture for Cathey.
 
   working    — RAM deque, current session only, destroyed on clear_working()
   episodic   — ChromaDB vector store (if available), else in-memory list
