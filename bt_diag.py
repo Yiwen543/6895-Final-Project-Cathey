@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Bluetooth audio diagnostic script for Nova on Raspberry Pi 5.
+Bluetooth audio diagnostic script for Cathey on Raspberry Pi 5.
 
 Usage:
     python3 bt_diag.py wifi       # Test WiFi/BT coexistence
@@ -337,7 +337,7 @@ def cmd_inference():
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Nova Bluetooth audio diagnostic tool"
+        description="Cathey Bluetooth audio diagnostic tool"
     )
     parser.add_argument(
         "test",

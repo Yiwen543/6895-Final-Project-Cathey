@@ -33,7 +33,7 @@ def _find_output_device():
 _INPUT_DEVICE  = _find_input_device()
 _OUTPUT_DEVICE = _find_output_device()
 
-from config import (
+from core.config import (
     AUDIO_DTYPE,
     CHANNELS,
     ENERGY_THRESHOLD,

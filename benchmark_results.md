@@ -48,7 +48,7 @@ All three 1.5B variants score only 20% on `general_qa` — they consistently con
 It achieves the highest overall accuracy (85%) with lower latency than 3B-Q4_K_M (3.9 s vs 5.7 s avg), saving 32% per inference call. This is because shorter quantization = fewer bytes to load per weight during matrix multiply on the ARM CPU.
 
 **5. The rule-based fast path makes model speed less critical for direct commands.**  
-In the production Nova pipeline, unambiguous direct commands (turn on/off, set temperature, open/close) are intercepted by a regex pre-filter before the LLM is called. This covers ~70% of real-world home control requests at <5 ms. The LLM is only invoked for ambiguous or conversational inputs, where 3B-Q3_K_M's 3.9 s average is acceptable.
+In the production Cathey pipeline, unambiguous direct commands (turn on/off, set temperature, open/close) are intercepted by a regex pre-filter before the LLM is called. This covers ~70% of real-world home control requests at <5 ms. The LLM is only invoked for ambiguous or conversational inputs, where 3B-Q3_K_M's 3.9 s average is acceptable.
 
 ---
 

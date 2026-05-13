@@ -24,7 +24,6 @@ It listens for the wake word "Cathey", classifies user intent into 4 categories,
 ├── gpio_executor.py        # Hardware control (LED ring, fan, dual stepper motors)
 ├── bt_diag.py              # Bluetooth audio diagnostic tool (WiFi/BT coexistence, RSSI, codec)
 ├── deploy.sh               # rsync + model download helper
-├── cathey.service          # systemd unit for autostart on Pi
 ├── bt-speaker.service      # systemd unit for auto-connecting Bluetooth speaker
 ├── lora_training.ipynb     # LoRA fine-tuning notebook (Qwen2.5-3B-Instruct)
 ├── dev_debug.ipynb         # Interactive pipeline testing + Mac/Windows microphone tests

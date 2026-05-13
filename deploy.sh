@@ -4,37 +4,37 @@ set -euo pipefail
 PI_HOST="${1:?Usage: ./deploy.sh tl3461@<IP> <BT_MAC>}"
 BT_MAC="${2:?Usage: ./deploy.sh pi@<IP> <BT_MAC>}"
 
-echo "==> Syncing files to ${PI_HOST}:~/nova/"
+echo "==> Syncing files to ${PI_HOST}:~/Cathey/"
 rsync -avz --exclude '__pycache__' --exclude '.git' --exclude 'tests/' \
-    ./ "${PI_HOST}:~/nova/"
+    ./ "${PI_HOST}:~/Cathey/"
 
 echo "==> Installing system dependencies"
 ssh "$PI_HOST" "sudo apt-get install -y --no-install-recommends \
     python3-pip libportaudio2 libasound2-dev bluetooth bluez libopenblas-dev"
 
 echo "==> Installing Python dependencies"
-ssh "$PI_HOST" "pip3 install --break-system-packages -r ~/nova/requirements_pi.txt"
+ssh "$PI_HOST" "pip3 install --break-system-packages -r ~/Cathey/requirements_pi.txt"
 
 echo "==> Installing llama-cpp-python with OpenBLAS"
 ssh "$PI_HOST" "CMAKE_ARGS='-DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS' \
     pip3 install llama-cpp-python --break-system-packages --no-cache-dir"
 
 echo "==> Downloading GGUF model (if needed, ~2GB)"
-ssh "$PI_HOST" "mkdir -p ~/nova/models && \
-    [ -f ~/nova/models/qwen2.5-3b-instruct-q4_k_m.gguf ] || \
+ssh "$PI_HOST" "mkdir -p ~/Cathey/models && \
+    [ -f ~/Cathey/models/qwen2.5-3b-instruct-q4_k_m.gguf ] || \
     wget -q --show-progress \
-      -O ~/nova/models/qwen2.5-3b-instruct-q4_k_m.gguf \
+      -O ~/Cathey/models/qwen2.5-3b-instruct-q4_k_m.gguf \
       'https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf'"
 
 echo "==> Downloading Piper voice model (if needed)"
-ssh "$PI_HOST" "mkdir -p ~/nova/voices && \
-    { [ -f ~/nova/voices/en_US-lessac-medium.onnx ] || \
+ssh "$PI_HOST" "mkdir -p ~/Cathey/voices && \
+    { [ -f ~/Cathey/voices/en_US-lessac-medium.onnx ] || \
       wget -q --show-progress \
-        -O ~/nova/voices/en_US-lessac-medium.onnx \
+        -O ~/Cathey/voices/en_US-lessac-medium.onnx \
         'https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx'; } && \
-    { [ -f ~/nova/voices/en_US-lessac-medium.onnx.json ] || \
+    { [ -f ~/Cathey/voices/en_US-lessac-medium.onnx.json ] || \
       wget -q --show-progress \
-        -O ~/nova/voices/en_US-lessac-medium.onnx.json \
+        -O ~/Cathey/voices/en_US-lessac-medium.onnx.json \
         'https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json'; }"
 
 echo "==> Setting SunFounder USB microphone as default PipeWire input"
@@ -50,11 +50,11 @@ ssh "$PI_HOST" "
 "
 
 echo "==> Writing bt-speaker.service (MAC: ${BT_MAC})"
-ssh "$PI_HOST" "sed 's/PLACEHOLDER_BT_MAC/${BT_MAC}/g' ~/nova/bt-speaker.service | \
+ssh "$PI_HOST" "sed 's/PLACEHOLDER_BT_MAC/${BT_MAC}/g' ~/Cathey/bt-speaker.service | \
     sudo tee /etc/systemd/system/bt-speaker.service > /dev/null"
 
 echo "==> Installing cathey.service"
-ssh "$PI_HOST" "sudo cp ~/nova/cathey.service /etc/systemd/system/cathey.service"
+ssh "$PI_HOST" "sudo cp ~/Cathey/cathey.service /etc/systemd/system/cathey.service"
 
 echo "==> Enabling services"
 ssh "$PI_HOST" "sudo systemctl daemon-reload && sudo systemctl enable cathey"
@@ -75,6 +75,6 @@ echo "    exit"
 echo ""
 read -rp "Start Cathey now? [y/N] " answer
 if [[ "${answer,,}" == "y" ]]; then
-    ssh "$PI_HOST" "sudo systemctl start bt-speaker && sleep 2 && sudo systemctl start nova"
-    echo "Cathey started. Follow logs: ssh ${PI_HOST} 'journalctl -u nova -f'"
+    ssh "$PI_HOST" "sudo systemctl start bt-speaker && sleep 2 && sudo systemctl start Cathey"
+    echo "Cathey started. Follow logs: ssh ${PI_HOST} 'journalctl -u Cathey -f'"
 fi

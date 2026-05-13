@@ -60,6 +60,6 @@ def test_ambiguous_falls_through():
 
 
 def test_case_insensitive():
-    result = try_rule_based("NOVA, TURN ON THE LIGHT")
+    result = try_rule_based("Cathey, TURN ON THE LIGHT")
     assert result is not None
     assert result["action"] == "turn_on"
